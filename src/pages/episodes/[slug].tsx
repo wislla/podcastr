@@ -7,6 +7,7 @@ import styles from './episode.module.scss';
 import Head from "next/head";
 import Image from "next/image";
 import Link from "next/link";
+import { usePlayer } from '../../contexts/PlayerContext';
 
 type Episode = {
     id: string;
@@ -25,7 +26,8 @@ type Episode = {
   }
 
 export default function Episode({episode} : EpisodeProps){
-
+    const { play } = usePlayer();
+    //const router = useRouter()
     return (
         
         <div className={styles.episode}>
@@ -45,7 +47,7 @@ export default function Episode({episode} : EpisodeProps){
                     src={episode.thumbnail}
                     objectFit="cover"
                 />
-                <button >
+                <button onClick={() => play(episode)}>
                     <img src="/play.svg" alt="Tocar episódio"/>
                 </button>
             </div>
@@ -70,7 +72,11 @@ export default function Episode({episode} : EpisodeProps){
 
 export const getStaticPaths : GetStaticPaths = async ()=>{
     return{
-        paths: [],
+        paths: [{
+            params:{
+                slug: 'a-importancia-da-contribuicao-em-open-source'
+            }
+        }],
         fallback: 'blocking'
     }
 }

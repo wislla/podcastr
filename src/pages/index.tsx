@@ -6,6 +6,8 @@ import { format , parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
 import { convertDurationToTimeString } from '../utils/convertDurationToTimeString';
 import styles from './home.module.scss';
+import { PlayerContext, usePlayer } from '../contexts/PlayerContext';
+import { useContext } from 'react';
 
 type Episode = {
 
@@ -26,6 +28,9 @@ type HomeProps = {
 }
 
 export default function Home( { latestEpisodes, allEpisodes }:HomeProps ) {
+  const { playList } = usePlayer();
+  const episodeList = [...latestEpisodes, ...allEpisodes];
+
   return (
     <div className={styles.homepage}>
       <section className={styles.latestEpisodes}>
@@ -33,7 +38,7 @@ export default function Home( { latestEpisodes, allEpisodes }:HomeProps ) {
 
         <ul>
           {
-          latestEpisodes.map(episode=>{
+          latestEpisodes.map((episode, index)=>{
             return(
               <li key={ episode.id }>
 
@@ -55,7 +60,7 @@ export default function Home( { latestEpisodes, allEpisodes }:HomeProps ) {
 
                 </div>
 
-                <button>
+                <button onClick={ ()=> playList(episodeList, index) }>
                   <img src="/play-green.svg" alt="play"/>
                 </button>
 
@@ -85,7 +90,7 @@ export default function Home( { latestEpisodes, allEpisodes }:HomeProps ) {
               </tr>
             </thead>
             <tbody>
-              {allEpisodes.map(episode=>{
+              {allEpisodes.map((episode, index) =>{
                 return(
                   <tr key={ episode.id } style={{width:72}}>
                       <td>
@@ -105,7 +110,9 @@ export default function Home( { latestEpisodes, allEpisodes }:HomeProps ) {
                       <td style={{width:100}}>{ episode.publishedAt }</td>
                       <td>{ episode.durationAsString }</td>
                       <td>
-                        <button><img src="/play-green.svg" alt=""/></button>
+                        <button onClick={() => playList(episodeList, index + latestEpisodes.length)}>
+                          <img src="/play-green.svg" alt=""/>
+                          </button>
                       </td>
 
 
